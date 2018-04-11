@@ -1,0 +1,11 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.error-summary {
+    color: #a94442;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
