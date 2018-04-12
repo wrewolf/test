@@ -30,7 +30,7 @@
             $w = new \app\models\Wallet();
             $w->setId(1);
             $w->setCountOne(10);
-            $w->setCountTwo(20);
+            $w->setCountTwo(30);
             $w->setCountFive(20);
             $w->setCountTen(15);
             $w->save();

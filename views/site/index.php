@@ -37,7 +37,6 @@
   </div>
 
   <div class="vm">
-    <button v-on:click="toreturn">Возврат</button>
     <div class="products">
       <h2>Продукты в VM</h2>
       <table>
@@ -83,26 +82,65 @@
     </div>
     <div class="wallet">
       <h2>"Кошелёк" VM</h2>
-      <ul>
-        <li>1р: {{ data['vm']['wallet'][1] }}</li>
-        <li>2р: {{ data['vm']['wallet'][2] }}</li>
-        <li>5р: {{ data['vm']['wallet'][5] }}</li>
-        <li>10р: {{ data['vm']['wallet'][10] }}</li>
-      </ul>
+      <table>
+        <tr>
+          <td>Номинал</td>
+          <td>Колличество</td>
+        </tr>
+        <tr>
+          <td>1р:</td>
+          <td>{{ data['vm']['wallet'][1] }}</td>
+        </tr>
+        <tr>
+          <td>2р:</td>
+          <td>{{ data['vm']['wallet'][2] }}</td>
+        </tr>
+        <tr>
+          <td>5р:</td>
+          <td>{{ data['vm']['wallet'][5] }}</td>
+        </tr>
+        <tr>
+          <td>10р:</td>
+          <td>{{ data['vm']['wallet'][10] }}</td>
+        </tr>
+      </table>
       <h3>
         Остаток в VM: {{ data['vm']['wallet']['sum'] }}р
       </h3>
     </div>
     <div class="op_wallet">
       <h2>Операционный кошелёк</h2>
-      <ul>
-        <li>1р: {{ data['vm']['op_wallet'][1] }}</li>
-        <li>2р: {{ data['vm']['op_wallet'][2] }}</li>
-        <li>5р: {{ data['vm']['op_wallet'][5] }}</li>
-        <li>10р: {{ data['vm']['op_wallet'][10] }}</li>
-      </ul>
+      <table>
+        <tr>
+          <td>Номинал</td>
+          <td>Колличество</td>
+        </tr>
+        <tr>
+          <td>1р:</td>
+          <td>{{ data['vm']['op_wallet'][1] }}</td>
+        </tr>
+        <tr>
+          <td>2р:</td>
+          <td>{{ data['vm']['op_wallet'][2] }}</td>
+        </tr>
+        <tr>
+          <td>5р:</td>
+          <td>{{ data['vm']['op_wallet'][5] }}</td>
+        </tr>
+        <tr>
+          <td>10р:</td>
+          <td>{{ data['vm']['op_wallet'][10] }}</td>
+        </tr>
+      </table>
       <h3>
-        Внесенная сумма: {{ data['vm']['op_wallet']['sum'] }}р
+        <table>
+          <tr>
+            <td>Внесенная сумма: {{ data['vm']['op_wallet']['sum'] }}р</td>
+            <td>
+              <button v-on:click="toreturn">Возврат</button>
+            </td>
+          </tr>
+        </table>
       </h3>
     </div>
   </div>
@@ -147,10 +185,14 @@
       <h3>
         В кошельке: {{ data['user']['sum'] }}р
       </h3>
+      <div v-show="data['user']['sum']==0">
+        <button v-on:click="vmreset">Сброс ВМ</button>
+      </div>
     </div>
   </div>
 
 </div>
+
 
 <script>
   app = new Vue({
@@ -178,6 +220,23 @@
       this.load();
     },
     methods: {
+      vmreset: function () {
+        const self = this;
+        axios.get('/site/reset', {})
+          .then(function (response) {
+            if (response.data.status === 200) {
+              self.data = response.data;
+              self.message = "&nbsp;";
+            } else {
+              self.message = response.data.message;
+            }
+            console.log(response.data);
+          })
+          .catch(function (error) {
+            self.message = "Ошибка выполнения запроса";
+            console.log(error);
+          });
+      },
       toreturn: function (event) {
         const self = this;
         self.message = "&nbsp";
@@ -236,11 +295,7 @@
       },
       load: function () {
         const self = this;
-        axios.get('/site/state', {
-          // params: {
-          //   ID: 12345
-          // }
-        })
+        axios.get('/site/state', {})
           .then(function (response) {
             if (response.data.status === 200) {
               self.data = response.data;
